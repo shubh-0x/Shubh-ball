@@ -209,11 +209,232 @@ canvas{display:block;flex-shrink:0;}
 .btn-cancel-sm{flex:1;padding:10px;border:1.5px solid rgba(255,255,255,.15);border-radius:10px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);font-size:12px;font-weight:900;font-family:'Nunito',sans-serif;cursor:pointer;}
 .btn-confirm-sm{flex:1;padding:10px;border:none;border-radius:10px;background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;font-size:12px;font-weight:900;font-family:'Nunito',sans-serif;cursor:pointer;box-shadow:0 3px 10px rgba(200,50,50,.3);}
 .set-toast{font-size:11px;font-weight:800;letter-spacing:1.5px;color:rgba(68,255,136,.75);text-align:center;min-height:16px;margin-top:8px;transition:opacity .4s;opacity:0;}
+
+/* ══ DEVELOPER MODE ══
+   Palette: Electric Blue #00C3FF · Deep Purple #7B2FFF · Neon Crimson #FF1744
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Neon palette CSS vars ── */
+:root {
+  --dev-blue:   #00C3FF;
+  --dev-purple: #7B2FFF;
+  --dev-red:    #FF1744;
+  --dev-blue2:  #0066FF;
+  --dev-glow-b: rgba(0,195,255,.55);
+  --dev-glow-p: rgba(123,47,255,.45);
+  --dev-glow-r: rgba(255,23,68,.35);
+}
+
+@keyframes devPulseSlot{
+  0%,100%{box-shadow:0 0 0 2px var(--dev-blue), 0 0 12px var(--dev-glow-b), 0 0 28px var(--dev-glow-p), inset 0 0 16px rgba(0,195,255,.05);}
+  50%    {box-shadow:0 0 0 2px var(--dev-purple),0 0 18px var(--dev-glow-p), 0 0 36px var(--dev-glow-b), inset 0 0 20px rgba(123,47,255,.07);}
+}
+@keyframes devPulseCircle{
+  0%,100%{box-shadow:0 0 0 3px var(--dev-blue),  0 0 14px var(--dev-glow-b), 0 0 28px var(--dev-glow-p);}
+  50%    {box-shadow:0 0 0 3px var(--dev-purple), 0 0 20px var(--dev-glow-p), 0 0 38px var(--dev-glow-r);}
+}
+@keyframes devBgShift{
+  0%  {background-position:0% 50%;}
+  50% {background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+@keyframes devBorderRot{
+  0%  {transform:rotate(0deg);}
+  100%{transform:rotate(360deg);}
+}
+@keyframes devSlideIn{from{transform:translateY(-28px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes devUnlock{0%{transform:scale(.5);opacity:0;}60%{transform:scale(1.12);opacity:1;}100%{transform:scale(1);opacity:1;}}
+@keyframes devTextGlow{
+  0%,100%{text-shadow:0 0 8px var(--dev-blue),0 0 20px var(--dev-glow-b);}
+  50%    {text-shadow:0 0 12px var(--dev-purple),0 0 28px var(--dev-glow-p);}
+}
+@keyframes devRowPulse{
+  0%,100%{box-shadow:0 0 0 1.5px var(--dev-blue),  0 0 8px var(--dev-glow-b);}
+  50%    {box-shadow:0 0 0 1.5px var(--dev-purple), 0 0 12px var(--dev-glow-p);}
+}
+@keyframes devBarFlow{
+  0%  {background-position:0% 0%;}
+  100%{background-position:0% 100%;}
+}
+@keyframes devLockBounce{0%{transform:scale(.4) rotate(-15deg);opacity:0;}55%{transform:scale(1.1) rotate(4deg);opacity:1;}100%{transform:scale(1) rotate(0deg);opacity:1;}}
+
+/* ── Circle avatar ── */
+.dev-avatar-texture{
+  background:linear-gradient(135deg,#001833,#0a0028,#001833) !important;
+  background-size:200% 200% !important;
+  animation:devBgShift 4s ease infinite, devPulseCircle 2s ease-in-out infinite !important;
+  border:2px solid var(--dev-blue) !important;
+  position:relative;
+  overflow:hidden;
+}
+.dev-avatar-texture::before{
+  content:'';
+  position:absolute;inset:-40%;
+  background:conic-gradient(from 0deg,transparent 60%,rgba(0,195,255,.18) 75%,transparent 90%);
+  animation:devBorderRot 3s linear infinite;
+  pointer-events:none;
+}
+.dev-avatar-texture::after{
+  content:'◈';
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:var(--dev-blue);
+  text-shadow:0 0 10px var(--dev-blue),0 0 22px var(--dev-glow-p);
+  pointer-events:none;z-index:1;
+}
+
+/* ── Outer slot box — 2P invite lobby ── */
+/* Approach: ::before is the animated gradient border (no border-image = radius works) */
+.dev-slot-texture{
+  position:relative !important;
+  background:linear-gradient(160deg,rgba(0,20,50,.95),rgba(8,0,30,.95)) !important;
+  border:none !important;
+  border-radius:16px !important;
+  padding:16px 12px;
+  animation:devPulseSlot 2.2s ease-in-out infinite !important;
+  overflow:hidden;
+  z-index:0;
+}
+/* Gradient border via pseudo-element */
+.dev-slot-texture::before{
+  content:'';
+  position:absolute;inset:0;border-radius:16px;
+  padding:2px;
+  background:linear-gradient(135deg,var(--dev-blue),var(--dev-purple),var(--dev-red),var(--dev-purple),var(--dev-blue));
+  background-size:300% 300%;
+  animation:devBgShift 3s ease infinite;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  pointer-events:none;z-index:1;
+}
+.dev-slot-texture > *{position:relative;z-index:2;}
+
+/* ── Rectangular row — 3P/4P waiting list (self-only) ── */
+.dev-row-texture{
+  position:relative;
+  background:linear-gradient(90deg,rgba(0,20,50,.9),rgba(8,0,32,.9)) !important;
+  border:1.5px solid var(--dev-blue) !important;
+  border-radius:10px;
+  overflow:hidden;
+  animation:devRowPulse 2s ease-in-out infinite !important;
+}
+/* Left accent bar */
+.dev-row-texture::before{
+  content:'';
+  position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--dev-blue),var(--dev-purple),var(--dev-red),var(--dev-purple),var(--dev-blue));
+  background-size:100% 300%;
+  animation:devBarFlow 2s linear infinite;
+  border-radius:3px 0 0 3px;
+}
+
+/* ── Developer badges ── */
+.badge-dev, .ilob-badge-dev{
+  background:linear-gradient(135deg,var(--dev-blue2),var(--dev-purple));
+  color:#fff;font-weight:900;letter-spacing:1.5px;
+  border-radius:6px;padding:2px 8px;
+  box-shadow:0 0 8px var(--dev-glow-b);
+  animation:devTextGlow 2s ease-in-out infinite;
+}
+.badge-dev{font-size:9px;}
+.ilob-badge-dev{font-size:8px;margin-top:4px;}
+
+/* ── Password modal ── */
+#dev-modal{
+  position:fixed;inset:0;z-index:999;
+  display:none;align-items:center;justify-content:center;
+  padding:20px;background:rgba(0,0,10,.93);backdrop-filter:blur(20px);
+}
+#dev-panel{
+  width:100%;max-width:310px;
+  background:linear-gradient(160deg,rgba(0,10,30,.99),rgba(5,0,20,.99));
+  border:1.5px solid rgba(0,195,255,.25);
+  border-radius:24px;padding:28px 22px;
+  box-shadow:0 0 40px rgba(0,195,255,.12),0 0 80px rgba(123,47,255,.1),0 24px 60px rgba(0,0,0,.85);
+  animation:devSlideIn .32s cubic-bezier(.34,1.56,.64,1);
+  text-align:center;
+}
+.dev-modal-icon{font-size:44px;margin-bottom:8px;display:block;filter:drop-shadow(0 0 10px var(--dev-blue));}
+.dev-modal-title{
+  font-family:'Boogaloo',cursive;font-size:22px;letter-spacing:2px;margin-bottom:4px;
+  background:linear-gradient(135deg,var(--dev-blue),var(--dev-purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.dev-modal-sub{font-size:10px;font-weight:800;letter-spacing:3px;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:20px;}
+#dev-pass-inp{
+  width:100%;padding:13px;
+  border:1.5px solid rgba(0,195,255,.25);border-radius:12px;
+  background:rgba(0,195,255,.04);color:#fff;font-size:20px;text-align:center;
+  letter-spacing:6px;font-weight:800;margin-bottom:8px;outline:none;
+  font-family:'Nunito',sans-serif;transition:border-color .2s, box-shadow .2s;
+  box-sizing:border-box;
+}
+#dev-pass-inp:focus{border-color:var(--dev-blue);box-shadow:0 0 0 3px rgba(0,195,255,.12);}
+.dev-err{font-size:11px;font-weight:800;color:#FF5555;min-height:16px;margin-bottom:10px;letter-spacing:.5px;}
+.dev-hint{font-size:9px;font-weight:700;color:rgba(255,255,255,.15);letter-spacing:1px;margin-bottom:16px;}
+#dev-unlocked-msg{display:none;flex-direction:column;align-items:center;gap:8px;}
+#dev-unlocked-msg .dev-icon-big{font-size:52px;animation:devLockBounce .5s cubic-bezier(.34,1.56,.64,1) forwards;filter:drop-shadow(0 0 14px var(--dev-blue));}
+.dev-unlocked-text{
+  font-family:'Boogaloo',cursive;font-size:24px;letter-spacing:2px;
+  background:linear-gradient(135deg,var(--dev-blue),var(--dev-purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:devTextGlow 1.2s ease-in-out infinite;
+}
+.dev-unlocked-sub{font-size:11px;font-weight:800;color:rgba(255,255,255,.4);letter-spacing:2px;}
+
+/* Dev toast */
+#dev-toast{
+  position:fixed;bottom:88px;left:50%;transform:translateX(-50%);
+  background:rgba(0,8,24,.94);border:1px solid rgba(0,195,255,.3);
+  border-radius:50px;padding:7px 18px;
+  font-size:11px;font-weight:900;letter-spacing:2px;color:var(--dev-blue);
+  text-align:center;z-index:500;pointer-events:none;
+  opacity:0;transition:opacity .3s;white-space:nowrap;
+  box-shadow:0 0 14px rgba(0,195,255,.15);
+}
+
+/* Dev mode active indicator */
+#dev-mode-indicator{
+  display:none;
+  font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;
+  color:var(--dev-blue);text-align:center;padding:5px 16px;
+  background:rgba(0,195,255,.05);
+  border:1px solid rgba(0,195,255,.2);border-radius:50px;
+  animation:devTextGlow 2.5s ease-in-out infinite;
+  margin-top:-4px;
+}
 </style>
 </head>
 <body>
 
 <button id="settings-btn" onclick="openSettings()" title="Settings">⚙️</button>
+
+<!-- Dev Toast -->
+<div id="dev-toast"></div>
+
+<!-- Developer Mode Password Modal -->
+<div id="dev-modal">
+  <div id="dev-panel">
+    <span class="dev-modal-icon" id="dev-modal-icon">🔐</span>
+    <div class="dev-modal-title" id="dev-modal-title">SECRET MODE</div>
+    <div class="dev-modal-sub" id="dev-modal-sub">Enter Developer Password</div>
+
+    <div id="dev-form-wrap">
+      <input id="dev-pass-inp" type="password" placeholder="••••••••••••" maxlength="20"
+        oninput="clearDevErr()" onkeydown="if(event.key==='Enter')verifyDevPassword()">
+      <div class="dev-err" id="dev-err"></div>
+      <div class="dev-hint">🔒 This mode is a secret. Shh.</div>
+      <button class="btn btn-gold" onclick="verifyDevPassword()" style="margin-bottom:8px;">🔓 Unlock</button>
+      <button class="btn" style="background:rgba(255,255,255,.06);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.1);" onclick="closeDevModal()">✕ Cancel</button>
+    </div>
+
+    <div id="dev-unlocked-msg">
+      <div class="dev-icon-big">🛡️</div>
+      <div class="dev-unlocked-text" id="dev-result-text">DEVELOPER MODE ON</div>
+      <div class="dev-unlocked-sub" id="dev-result-sub">WELCOME, DEVELOPER</div>
+    </div>
+  </div>
+</div>
 
 <div id="settings-modal" onclick="if(event.target===this)closeSettings()">
   <div id="settings-panel">
@@ -258,6 +479,7 @@ canvas{display:block;flex-shrink:0;}
 <div id="lobby">
   <div class="lobby-inner">
     <div class="logo">⚽ SHUBH <em>BALL</em><small>Online Multiplayer</small></div>
+    <div id="dev-mode-indicator">🛡️ DEVELOPER MODE ACTIVE</div>
 
     <input class="inp" id="name-inp" placeholder="YOUR NAME">
     <div id="name-save-indicator" style="font-size:10px;font-weight:800;color:rgba(68,255,136,0.6);letter-spacing:2px;text-align:center;min-height:14px;margin-top:-8px;transition:opacity .4s;opacity:0;">✓ NAME SAVED</div>
@@ -265,7 +487,7 @@ canvas{display:block;flex-shrink:0;}
     <div style="width:100%;">
       <div class="card-lbl">🎮 GAME MODE</div>
       <div class="mode-row">
-        <button class="btn-mode active" id="mode-2" onclick="selectMode(2)">👤 2P</button>
+        <button class="btn-mode active" id="mode-2" onclick="selectMode(2);trackDevClick()">👤 2P</button>
         <button class="btn-mode" id="mode-3" onclick="selectMode(3)">👥 3P</button>
         <button class="btn-mode" id="mode-4" onclick="selectMode(4)">🏟️ 4P</button>
         <button class="btn-mode" id="mode-bot" onclick="selectMode('bot')">🤖 BOT</button>
@@ -379,13 +601,13 @@ canvas{display:block;flex-shrink:0;}
     <div class="ilob-title">⚽ Match Lobby</div>
     <div class="ilob-sub">Get Ready to Play</div>
     <div class="ilob-players">
-      <div class="ilob-slot ilob-slot-red">
+      <div class="ilob-slot ilob-slot-red" id="ilob-slot-1">
         <div class="ilob-avatar ilob-av-red" id="ilob-av1">🔴</div>
         <div class="ilob-pname ilob-pname-red" id="ilob-name1">—</div>
         <span class="ilob-badge ilob-badge-host">HOST</span>
       </div>
       <div class="ilob-vs">VS</div>
-      <div class="ilob-slot ilob-slot-blue">
+      <div class="ilob-slot ilob-slot-blue" id="ilob-slot-2">
         <div class="ilob-avatar ilob-av-blue" id="ilob-av2">🔵</div>
         <div class="ilob-pname ilob-pname-blue" id="ilob-name2">—</div>
         <span class="ilob-badge ilob-badge-guest" id="ilob-badge2">GUEST</span>
@@ -616,6 +838,7 @@ function startBotGame(){
   playerTeams=[0,1];
   teamNames=[playerName,botName];
   allPlayerNames=[playerName,botName];
+  playerDevFlags[0]=devModeActive; playerDevFlags[1]=false;
   mkState(); showGame(); startLoop();
 }
 
@@ -896,6 +1119,7 @@ function handleHostMsg(d,ci){
   if(d.type==='join'){
     allPlayerNames[pi]=d.name||('P'+(pi+1));
     allEnteredTeamNames[pi]=d.teamName||'';
+    playerDevFlags[pi] = !!d.isDev;
     if(roomType===2){
       // 2P: wait for host to click Start
       teamNames=[allPlayerNames[0],allPlayerNames[1]];
@@ -940,7 +1164,7 @@ function broadcastRoster(){
   const players=[];
   for(let i=0;i<numPlayers;i++){
     const joined = i===0 || (i<=conns.length && conns[i-1] && conns[i-1].open);
-    players.push({ name: allPlayerNames[i]||null, joined, isHost: i===0 });
+    players.push({ name: allPlayerNames[i]||null, joined, isHost: i===0, isDev: playerDevFlags[i]||false });
   }
   const msg={ type:'roster', players, numPlayers, joined: conns.filter(c=>c&&c.open).length+1 };
   conns.forEach(c=>{ if(c&&c.open) c.send(msg); });
@@ -967,9 +1191,14 @@ function renderWaitingList(){
   for(let i=0;i<numPlayers;i++){
     const joined=i<conns.length+1; // host (0) + connected clients
     const isMe=i===0;
+    const isDevRow = isMe && devModeActive; // only self sees own dev row, not others
     const div=document.createElement('div');
     div.className='player-wait-item';
+    if (isDevRow) applyDevRowTexture(div);
     const teamN=allEnteredTeamNames[i]||'';
+    const badge = isMe
+      ? `<span class="pwi-badge badge-host">HOST</span>${devModeActive ? devBadgeRowHTML() : ''}`
+      : joined ? (playerDevFlags[i] ? devBadgeRowHTML() : '') : `<span class="pwi-badge badge-wait">P${i+1}</span>`;
     div.innerHTML=`
       <div class="pwi-left">
         <div class="pwi-dot ${joined?'dot-on':'dot-off'}"></div>
@@ -978,7 +1207,7 @@ function renderWaitingList(){
           ${teamN?`<div class="pwi-team">${teamN}</div>`:''}
         </div>
       </div>
-      <span class="pwi-badge ${isMe?'badge-host':joined?'badge-joined':'badge-wait'}">${isMe?'HOST':joined?'JOINED':'P'+(i+1)}</span>
+      ${badge}
     `;
     el.appendChild(div);
   }
@@ -1053,6 +1282,8 @@ function confirmTeams(){
   teamNames[0]=allEnteredTeamNames[firstA]||allPlayerNames[firstA]||'TEAM A';
   teamNames[1]=allEnteredTeamNames[firstB]||allPlayerNames[firstB]||'TEAM B';
 
+  playerDevFlags[0] = devModeActive;
+
   // Send assignment to each client
   for(let ci=0;ci<conns.length;ci++){
     const pi=ci+1;
@@ -1063,7 +1294,8 @@ function confirmTeams(){
         playerTeams:[...playerTeams],
         teamNames:[...teamNames],
         playerNames:[...allPlayerNames],
-        numPlayers
+        numPlayers,
+        playerDevFlags:[...playerDevFlags]
       });
     }
   }
@@ -1096,17 +1328,29 @@ function clientSetup(){
     const myName=getMyName();
     myJoinName = myName;
     const myTN=roomType>2?getTeamName(false):'';
-    conn.send({type:'join',name:myName,teamName:myTN});
-    // For 3P/4P: show client waiting screen with own name as placeholder
+    conn.send({type:'join',name:myName,teamName:myTN,isDev:devModeActive});
+    // For 3P/4P: show client waiting screen
     if(roomType>2){
       document.getElementById('lobby-main').style.display='none';
       document.getElementById('lobby-client-wait').style.display='block';
-      document.getElementById('client-player-list').innerHTML=`
-        <div class="player-wait-item">
-          <div class="pwi-left"><div class="pwi-dot dot-on"></div><div><div class="pwi-name">${myName}</div></div></div>
-          <span class="pwi-badge badge-joined">YOU ★</span>
-        </div>`;
-      document.getElementById('client-wait-status').textContent='Connected! Waiting for others…';
+
+      // Pre-render correct number of slots using numPlayers (set from URL &np= param)
+      const el=document.getElementById('client-player-list');
+      const hdr=`<div style="font-size:9px;font-weight:800;letter-spacing:3px;color:rgba(255,255,255,.28);text-transform:uppercase;text-align:center;margin-bottom:10px;">Players in Lobby</div>`;
+      // Slot 0 = HOST (unknown name yet), slots 1..numPlayers-1 = guests
+      let rows=`<div class="player-wait-item">
+        <div class="pwi-left"><div class="pwi-dot dot-off"></div><div><div class="pwi-name">Waiting…</div></div></div>
+        <span class="pwi-badge badge-host">HOST</span></div>`;
+      for(let i=1;i<numPlayers;i++){
+        const isYou=i===1;
+        const devCls=isYou&&devModeActive?' dev-row-texture':'';
+        rows+=`<div class="player-wait-item${devCls}">
+          <div class="pwi-left"><div class="pwi-dot ${isYou?'dot-on':'dot-off'}"></div>
+          <div><div class="pwi-name">${isYou?myName:'Waiting…'}</div></div></div>
+          ${isYou?`<span class="pwi-badge badge-you">YOU ★</span>${devModeActive?devBadgeRowHTML():''}`:''}</div>`;
+      }
+      el.innerHTML=hdr+rows;
+      document.getElementById('client-wait-status').textContent=`Connected! Waiting for others… (1 / ${numPlayers})`;
     }
   });
   conn.on('data',d=>{
@@ -1122,6 +1366,7 @@ function clientSetup(){
       playerTeams=d.playerTeams||[0,1];
       teamNames=d.teamNames||['TEAM A','TEAM B'];
       allPlayerNames=d.playerNames||['P1','P2','P3','P4'];
+      playerDevFlags=d.playerDevFlags||[false,false,false,false];
       mkState(); showGame(); startLoop();
     }
     if(d.type==='state'){
@@ -1149,20 +1394,27 @@ function renderClientRoster(players, total, joinedCount){
   el.appendChild(hdr);
   for(let i=0;i<total;i++){
     const p=players[i]||{};
-    const isYou = p.joined && p.name === myJoinName;
+    const isYou = p.joined && !p.isHost && p.name === myJoinName;
+    const isDevRow = isYou && devModeActive; // only self sees own dev row texture
     const div=document.createElement('div');
     div.className='player-wait-item';
+    if (isDevRow) applyDevRowTexture(div);
+    const badge = p.isHost
+      ? `<span class="pwi-badge badge-host">HOST</span>${p.isDev ? devBadgeRowHTML() : ''}`
+      : isYou
+        ? `<span class="pwi-badge badge-you">YOU ★</span>${devModeActive ? devBadgeRowHTML() : ''}`
+        : p.joined ? (p.isDev ? devBadgeRowHTML() : '') : `<span class="pwi-badge badge-wait">P${i+1}</span>`;
     div.innerHTML=`
       <div class="pwi-left">
         <div class="pwi-dot ${p.joined?'dot-on':'dot-off'}"></div>
         <div><div class="pwi-name">${p.joined?(p.name||'P'+(i+1)):'Waiting…'}</div></div>
       </div>
-      <span class="pwi-badge ${p.isHost?'badge-host':isYou?'badge-you':p.joined?'badge-joined':'badge-wait'}">${p.isHost?'HOST':isYou?'YOU ★':p.joined?'JOINED':'P'+(i+1)}</span>
+      ${badge}
     `;
     el.appendChild(div);
   }
   const statusEl=document.getElementById('client-wait-status');
-  if(statusEl) statusEl.textContent=`Players joined: ${joinedCount} / ${total} · Waiting for host…`;
+  if(statusEl) statusEl.textContent=`Players joined: ${joinedCount} / ${total} — Waiting for host…`;
 }
 
 // ─── CLIENT: render live team assignment sent by host ───
@@ -1170,34 +1422,39 @@ function renderClientTeams(data){
   const el=document.getElementById('client-player-list');
   if(!el) return;
 
-  const teamA=[], teamB=[];
-  for(let i=0;i<data.numPlayers;i++){
-    const name=data.playerNames[i]||'P'+(i+1);
-    const isHost=i===0;
-    const isYou=name===myJoinName;
-    if(data.assignTeams[i]===0) teamA.push({name,isHost,isYou});
-    else teamB.push({name,isHost,isYou});
-  }
-
-  const makeRow=(p)=>`
-    <div class="player-wait-item">
+  const makeRow=(p,idx)=>{
+    const isDevRow = p.isYou && devModeActive; // only self sees own dev row texture
+    const devCls = isDevRow ? ' dev-row-texture' : '';
+    const devTag = isDevRow ? devBadgeRowHTML() : '';
+    return `<div class="player-wait-item${devCls}">
       <div class="pwi-left">
         <div class="pwi-dot dot-on"></div>
         <div><div class="pwi-name">${p.name}</div></div>
       </div>
-      <span class="pwi-badge ${p.isHost?'badge-host':p.isYou?'badge-you':'badge-joined'}">${p.isHost?'HOST':p.isYou?'YOU ★':'JOINED'}</span>
+      ${p.isHost?`<span class="pwi-badge badge-host">HOST</span>${devTag}`:p.isYou?`<span class="pwi-badge badge-you">YOU ★</span>${devTag}`:devTag}
     </div>`;
+  };
+
+  // Build indexed arrays so we can pass the correct playerIdx for dev flag lookup
+  const teamAIdx=[], teamBIdx=[];
+  for(let i=0;i<data.numPlayers;i++){
+    const name=data.playerNames[i]||'P'+(i+1);
+    const isHost=i===0;
+    const isYou=name===myJoinName;
+    if(data.assignTeams[i]===0) teamAIdx.push({name,isHost,isYou,_i:i});
+    else teamBIdx.push({name,isHost,isYou,_i:i});
+  }
 
   el.innerHTML=`
     <div style="font-size:9px;font-weight:800;letter-spacing:3px;color:rgba(255,255,255,.28);text-transform:uppercase;text-align:center;margin-bottom:12px;">⚙️ Host is Assigning Teams…</div>
-    <div style="display:flex;gap:10px;">
-      <div style="flex:1;background:rgba(255,80,80,.09);border:1px solid rgba(255,80,80,.25);border-radius:13px;padding:10px;">
-        <div style="font-size:10px;font-weight:900;color:#FF7070;letter-spacing:2px;text-align:center;margin-bottom:8px;text-transform:uppercase;">${data.nameA}</div>
-        ${teamA.map(makeRow).join('')}
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:rgba(255,80,80,.09);border:1px solid rgba(255,80,80,.25);border-radius:13px;padding:10px;">
+        <div style="font-size:10px;font-weight:900;color:#FF7070;letter-spacing:2px;text-align:center;margin-bottom:8px;text-transform:uppercase;">${data.nameA} — LEFT TEAM</div>
+        ${teamAIdx.map(p=>makeRow(p,p._i)).join('')}
       </div>
-      <div style="flex:1;background:rgba(68,150,255,.09);border:1px solid rgba(68,150,255,.25);border-radius:13px;padding:10px;">
-        <div style="font-size:10px;font-weight:900;color:#66AAFF;letter-spacing:2px;text-align:center;margin-bottom:8px;text-transform:uppercase;">${data.nameB}</div>
-        ${teamB.map(makeRow).join('')}
+      <div style="background:rgba(68,150,255,.09);border:1px solid rgba(68,150,255,.25);border-radius:13px;padding:10px;">
+        <div style="font-size:10px;font-weight:900;color:#66AAFF;letter-spacing:2px;text-align:center;margin-bottom:8px;text-transform:uppercase;">${data.nameB} — RIGHT TEAM</div>
+        ${teamBIdx.map(p=>makeRow(p,p._i)).join('')}
       </div>
     </div>`;
 
@@ -1387,6 +1644,44 @@ function drawPlayer(p,idx){
   const t=playerTeams[idx]||0;
   const col=TEAM_COL[t], dk=TEAM_DK[t];
   const hx=p.x, hy=p.y;
+  const isDev = playerDevFlags[idx] === true;
+
+  // Developer aura — electric blue / deep purple / neon crimson
+  if (isDev) {
+    const auraT = performance.now();
+    const auraR = HR + 9 + Math.sin(auraT * 0.003) * 3;
+    // Three pulsing rings cycling through blue → purple → red
+    const ringCols = [
+      [0,195,255],   // electric blue
+      [123,47,255],  // deep purple
+      [255,23,68]    // neon crimson
+    ];
+    for (let ri = 0; ri < 3; ri++) {
+      const phase = (auraT * 0.0008 + ri * 0.33) % 1; // 0–1
+      const ci = Math.floor(phase * 3) % 3;
+      const ci2 = (ci + 1) % 3;
+      const t2 = (phase * 3) % 1;
+      const r = ringCols[ci][0] + (ringCols[ci2][0]-ringCols[ci][0])*t2;
+      const g = ringCols[ci][1] + (ringCols[ci2][1]-ringCols[ci][1])*t2;
+      const b = ringCols[ci][2] + (ringCols[ci2][2]-ringCols[ci][2])*t2;
+      X.beginPath();
+      X.arc(hx, hy, auraR + ri * 5, 0, Math.PI * 2);
+      X.strokeStyle = `rgba(${r|0},${g|0},${b|0},${0.6 - ri*0.15})`;
+      X.lineWidth = 2.5 - ri * 0.6;
+      X.stroke();
+    }
+    // Orbiting sparkle dots
+    for (let si = 0; si < 5; si++) {
+      const angle = auraT * 0.0018 + si * (Math.PI * 2 / 5);
+      const sx = hx + Math.cos(angle) * (auraR + 13);
+      const sy = hy + Math.sin(angle) * (auraR + 13);
+      const sc = ringCols[si % 3];
+      X.beginPath();
+      X.arc(sx, sy, 2.2, 0, Math.PI * 2);
+      X.fillStyle = `rgba(${sc[0]},${sc[1]},${sc[2]},0.9)`;
+      X.fill();
+    }
+  }
 
   if(p.kick>0||p.hitGlow>0){
     X.shadowColor=col;
@@ -1429,12 +1724,21 @@ function drawPlayer(p,idx){
   X.beginPath();X.arc(hx+eox*.3,hy+9,5.5,0.2,Math.PI-.2);X.stroke();
 
   // Name tag
-  const tagName=idx===myIdx?'YOU':allPlayerNames[idx].substring(0,8);
-  const tagColor=idx===myIdx?'#FFD700':(t===0?'#FF9999':'#99CCFF');
+  const isDevPlayer = playerDevFlags[idx] === true;
+  const rawName = idx===myIdx?'YOU':allPlayerNames[idx].substring(0,8);
+  const tagName = isDevPlayer && idx !== myIdx ? '[DEV] ' + rawName : rawName;
+  const tagColor = idx===myIdx ? '#FFD700' : (isDevPlayer ? '#00C3FF' : (t===0?'#FF9999':'#99CCFF'));
   const tagW=Math.max(30,tagName.length*7+10);
-  X.fillStyle='rgba(0,0,0,.72)';
+  X.fillStyle = isDevPlayer ? 'rgba(0,10,30,.88)' : 'rgba(0,0,0,.72)';
   X.beginPath();X.roundRect(hx-tagW/2,hy-HR-20,tagW,15,4);X.fill();
-  X.fillStyle=tagColor;X.font='bold 9px Nunito,Arial';X.textAlign='center';
+  if (isDevPlayer) {
+    const tg2 = X.createLinearGradient(hx-tagW/2, 0, hx+tagW/2, 0);
+    tg2.addColorStop(0,'#00C3FF'); tg2.addColorStop(.5,'#7B2FFF'); tg2.addColorStop(1,'#00C3FF');
+    X.fillStyle = tg2;
+  } else {
+    X.fillStyle=tagColor;
+  }
+  X.font='bold 9px Nunito,Arial';X.textAlign='center';
   X.fillText(tagName,hx,hy-HR-8);
   X.shadowBlur=0;
 }
@@ -1616,6 +1920,7 @@ function goLobby(){
   allEnteredTeamNames=['','','',''];
   teamNames=['TEAM A','TEAM B'];
   remoteInputs=[{L:0,R:0,J:0,K:0},{L:0,R:0,J:0,K:0},{L:0,R:0,J:0,K:0}];
+  playerDevFlags=[false,false,false,false];
   // Re-apply mode buttons
   ['2','3','4','bot'].forEach(k=>{const el=document.getElementById('mode-'+k);if(el)el.classList.toggle('active',k==='2');});
   document.getElementById('create-team-wrap').style.display='none';
@@ -1729,6 +2034,13 @@ function openInviteLobby() {
   iAmHost = true;
   iAmGuest = false;
 
+  // Clean up stale dev badges
+  ['ilob-dev-badge-host','ilob-dev-badge-guest'].forEach(id=>{const el=document.getElementById(id);if(el)el.remove();});
+  removeDevTexture(document.getElementById('ilob-av1'));
+  removeDevTexture(document.getElementById('ilob-av2'));
+  removeDevSlotTexture(document.getElementById('ilob-slot-1'));
+  removeDevSlotTexture(document.getElementById('ilob-slot-2'));
+
   // Show lobby as host
   document.getElementById('ilob-name1').textContent = myName;
   document.getElementById('ilob-av1').textContent = myName[0] || '🔴';
@@ -1738,6 +2050,30 @@ function openInviteLobby() {
   document.getElementById('ilob-start-wrap').style.display = 'none';
   document.getElementById('ilob-wait-wrap').style.display = 'none';
   document.getElementById('ilob-status').textContent = '⏳ Setting up room…';
+
+  // Apply DEV texture to host avatar if developer mode active
+  const av1 = document.getElementById('ilob-av1');
+  const slot1el = document.getElementById('ilob-slot-1');
+  removeDevTexture(av1);
+  removeDevSlotTexture(slot1el);
+  if (devModeActive) {
+    applyDevTexture(av1);
+    applyDevSlotTexture(slot1el);
+    av1.textContent = '';
+    // Add DEV badge below HOST badge if not already there
+    let devBadgeEl = document.getElementById('ilob-dev-badge-host');
+    if (!devBadgeEl) {
+      devBadgeEl = document.createElement('span');
+      devBadgeEl.id = 'ilob-dev-badge-host';
+      devBadgeEl.className = 'ilob-badge ilob-badge-dev';
+      devBadgeEl.textContent = '⚡ DEV';
+      if (slot1el) slot1el.appendChild(devBadgeEl);
+    }
+  } else {
+    // Remove dev badge if switching
+    const old = document.getElementById('ilob-dev-badge-host');
+    if (old) old.remove();
+  }
 
   // Show room code
   document.getElementById('ilob-room-code').textContent = inviteRoomCode;
@@ -1792,7 +2128,7 @@ function startInviteHostPeer() {
     conns.push(c);
     c.on('open', () => {
       // Send real host name to guest immediately so their lobby shows the correct name
-      c.send({ type: 'welcome', hostName: myName });
+      c.send({ type: 'welcome', hostName: myName, hostDev: devModeActive });
     });
     c.on('data', d => {
       if (d.type === 'join') {
@@ -1800,9 +2136,33 @@ function startInviteHostPeer() {
         allPlayerNames[1] = guestName;
         teamNames = [myName, guestName];
         playerTeams = [0, 1];
+        // Track dev flags
+        playerDevFlags[0] = devModeActive;
+        playerDevFlags[1] = !!d.isDev;
         // Update lobby UI
         document.getElementById('ilob-name2').textContent = guestName;
-        document.getElementById('ilob-av2').textContent = guestName[0] || '🔵';
+        const av2 = document.getElementById('ilob-av2');
+        const slot2el = document.getElementById('ilob-slot-2');
+        av2.textContent = guestName[0] || '🔵';
+        removeDevTexture(av2);
+        removeDevSlotTexture(slot2el);
+        if (d.isDev) {
+          applyDevTexture(av2);
+          applyDevSlotTexture(slot2el);
+          av2.textContent = '';
+          // Add DEV badge to guest slot
+          let gDevBadge = document.getElementById('ilob-dev-badge-guest');
+          if (!gDevBadge) {
+            gDevBadge = document.createElement('span');
+            gDevBadge.id = 'ilob-dev-badge-guest';
+            gDevBadge.className = 'ilob-badge ilob-badge-dev';
+            gDevBadge.textContent = '⚡ DEV';
+            if (slot2el) slot2el.appendChild(gDevBadge);
+          }
+        } else {
+          const old = document.getElementById('ilob-dev-badge-guest');
+          if (old) old.remove();
+        }
         document.getElementById('ilob-badge2').textContent = 'GUEST';
         document.getElementById('ilob-status').textContent = '✅ ' + guestName + ' joined! You can start now.';
         document.getElementById('ilob-wait-wrap').style.display = 'none';
@@ -1823,6 +2183,7 @@ function startInviteHostPeer() {
 function startInviteGame() {
   if (!conns[0]) return;
   const myName = getMyPlayerName();
+  playerDevFlags[0] = devModeActive;
   conns[0].send({
     type: 'start',
     name: myName,
@@ -1830,7 +2191,8 @@ function startInviteGame() {
     playerTeams: playerTeams,
     yourIdx: 1,
     playerNames: allPlayerNames,
-    numPlayers: 2
+    numPlayers: 2,
+    playerDevFlags: [...playerDevFlags]
   });
   isHost = true; myIdx = 0;
   document.getElementById('invite-lobby').style.display = 'none';
@@ -1843,6 +2205,13 @@ function joinInviteLobbyAsGuest(roomCode, hostNameFromUrl) {
   iAmHost = false;
   iAmGuest = true;
 
+  // Clean up any leftover dev badges from previous session
+  ['ilob-dev-badge-host','ilob-dev-badge-guest'].forEach(id=>{const el=document.getElementById(id);if(el)el.remove();});
+  removeDevTexture(document.getElementById('ilob-av1'));
+  removeDevTexture(document.getElementById('ilob-av2'));
+  removeDevSlotTexture(document.getElementById('ilob-slot-1'));
+  removeDevSlotTexture(document.getElementById('ilob-slot-2'));
+
   const myName = getMyPlayerName();
   // Show host's real name immediately if encoded in the URL
   const hostDisplay = hostNameFromUrl ? decodeURIComponent(hostNameFromUrl) : '…';
@@ -1852,6 +2221,16 @@ function joinInviteLobbyAsGuest(roomCode, hostNameFromUrl) {
   // The host slot always has the HOST badge (static in HTML), guest slot = YOU
   document.getElementById('ilob-name2').textContent = myName;
   document.getElementById('ilob-av2').textContent = myName[0] || '🔵';
+  // Apply dev texture to own avatar and slot if developer
+  const av2Self = document.getElementById('ilob-av2');
+  const slot2Self = document.getElementById('ilob-slot-2');
+  removeDevTexture(av2Self);
+  removeDevSlotTexture(slot2Self);
+  if (devModeActive) {
+    applyDevTexture(av2Self);
+    applyDevSlotTexture(slot2Self);
+    av2Self.textContent = '';
+  }
   document.getElementById('ilob-badge2').style.display = '';
   document.getElementById('ilob-badge2').textContent = 'YOU';
   document.getElementById('ilob-start-wrap').style.display = 'none';
@@ -1868,14 +2247,43 @@ function joinInviteLobbyAsGuest(roomCode, hostNameFromUrl) {
   peer.on('open', () => {
     conn = peer.connect(inviteRoomCode);
     conn.on('open', () => {
-      conn.send({ type: 'join', name: myName, teamName: '' });
+      conn.send({ type: 'join', name: myName, teamName: '', isDev: devModeActive });
       document.getElementById('ilob-status').textContent = '✅ Connected! Waiting for host to start…';
     });
     conn.on('data', d => {
       if (d.type === 'welcome') {
         // Host sent their real name after connection
-        document.getElementById('ilob-name1').textContent = d.hostName;
-        document.getElementById('ilob-av1').textContent = d.hostName[0] || '🔴';
+        const hostName = d.hostName;
+        document.getElementById('ilob-name1').textContent = hostName;
+        const av1 = document.getElementById('ilob-av1');
+        const slot1r = document.getElementById('ilob-slot-1');
+        av1.textContent = hostName[0] || '🔴';
+        removeDevTexture(av1);
+        removeDevSlotTexture(slot1r);
+        if (d.hostDev) {
+          applyDevTexture(av1);
+          applyDevSlotTexture(slot1r);
+          av1.textContent = '';
+          // Add DEV badge to host slot
+          let hDevBadge = document.getElementById('ilob-dev-badge-host');
+          if (!hDevBadge) {
+            hDevBadge = document.createElement('span');
+            hDevBadge.id = 'ilob-dev-badge-host';
+            hDevBadge.className = 'ilob-badge ilob-badge-dev';
+            hDevBadge.textContent = '⚡ DEV';
+            if (slot1r) slot1r.appendChild(hDevBadge);
+          }
+        }
+        // Apply dev texture to guest (self) avatar + slot if I'm dev
+        const av2 = document.getElementById('ilob-av2');
+        const slot2r = document.getElementById('ilob-slot-2');
+        removeDevTexture(av2);
+        removeDevSlotTexture(slot2r);
+        if (devModeActive) {
+          applyDevTexture(av2);
+          applyDevSlotTexture(slot2r);
+          av2.textContent = '';
+        }
       }
       if (d.type === 'start') {
         myIdx = d.yourIdx;
@@ -1883,6 +2291,7 @@ function joinInviteLobbyAsGuest(roomCode, hostNameFromUrl) {
         playerTeams = d.playerTeams || [0, 1];
         teamNames = d.teamNames || ['TEAM A', 'TEAM B'];
         allPlayerNames = d.playerNames || ['P1', 'P2'];
+        playerDevFlags = d.playerDevFlags || [false, false, false, false];
         isHost = false;
         document.getElementById('invite-lobby').style.display = 'none';
         mkState(); showGame(); startLoop();
@@ -1990,6 +2399,7 @@ function shareRoomLink() {
 
 function start2PGame() {
   // Send start signal to guest
+  playerDevFlags[0] = devModeActive;
   conns[0].send({
     type: 'start',
     name: allPlayerNames[0],
@@ -1997,7 +2407,8 @@ function start2PGame() {
     playerTeams: playerTeams,
     yourIdx: 1,
     playerNames: allPlayerNames,
-    numPlayers: 2
+    numPlayers: 2,
+    playerDevFlags: [...playerDevFlags]
   });
   isHost = true;
   myIdx = 0;
@@ -2030,6 +2441,180 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+// ══════════════════════════════════════════════════
+// ══ DEVELOPER MODE SYSTEM                        ══
+// ══════════════════════════════════════════════════
+
+const DEV_KEY = '__sb_dev__';
+const DEV_PASSWORD = '1234shubh1234';
+let devModeActive = localStorage.getItem(DEV_KEY) === '1';
+let _devClickCount = 0;
+let _devClickTimer = null;
+
+// playerDevFlags[i] = true if player[i] is a developer
+let playerDevFlags = [false, false, false, false];
+
+// Show dev mode indicator if already active
+if (devModeActive) {
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('dev-mode-indicator').style.display = 'block';
+  });
+}
+
+// Track secret clicks on 2P button
+function trackDevClick() {
+  _devClickCount++;
+  // Reset click count if idle for >4 seconds
+  clearTimeout(_devClickTimer);
+  _devClickTimer = setTimeout(() => { _devClickCount = 0; }, 4000);
+
+  // If already ON → 10 clicks turns it OFF
+  if (devModeActive) {
+    const rem = 10 - _devClickCount;
+    if (_devClickCount === 7)       showDevToast('🔒 3 clicks left…');
+    else if (_devClickCount === 8)  showDevToast('🔒 2 clicks left…');
+    else if (_devClickCount === 9)  showDevToast('🔒 1 click left…');
+    else if (_devClickCount >= 10) {
+      _devClickCount = 0;
+      clearTimeout(_devClickTimer);
+      deactivateDevMode();
+    }
+    return;
+  }
+
+  // Not yet active → 10 clicks triggers password prompt
+  if (_devClickCount === 7)       showDevToast('🔒 3 clicks left…');
+  else if (_devClickCount === 8)  showDevToast('🔒 2 clicks left…');
+  else if (_devClickCount === 9)  showDevToast('🔒 1 click left…');
+  else if (_devClickCount >= 10) {
+    _devClickCount = 0;
+    clearTimeout(_devClickTimer);
+    openDevModal();
+  }
+}
+
+function showDevToast(msg) {
+  const el = document.getElementById('dev-toast');
+  el.textContent = msg;
+  el.style.opacity = '1';
+  clearTimeout(showDevToast._t);
+  showDevToast._t = setTimeout(() => { el.style.opacity = '0'; }, 2000);
+}
+
+function openDevModal() {
+  document.getElementById('dev-pass-inp').value = '';
+  document.getElementById('dev-err').textContent = '';
+  document.getElementById('dev-form-wrap').style.display = 'block';
+  document.getElementById('dev-unlocked-msg').style.display = 'none';
+  document.getElementById('dev-modal-icon').textContent = '🔐';
+  document.getElementById('dev-modal-title').textContent = 'SECRET MODE';
+  document.getElementById('dev-modal-sub').textContent = 'Enter Developer Password';
+  document.getElementById('dev-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('dev-pass-inp').focus(), 300);
+}
+
+function closeDevModal() {
+  document.getElementById('dev-modal').style.display = 'none';
+}
+
+function clearDevErr() {
+  document.getElementById('dev-err').textContent = '';
+}
+
+function verifyDevPassword() {
+  const val = document.getElementById('dev-pass-inp').value;
+  if (val === DEV_PASSWORD) {
+    activateDevMode();
+  } else {
+    document.getElementById('dev-err').textContent = '❌ Incorrect password. Try again.';
+    document.getElementById('dev-pass-inp').value = '';
+    document.getElementById('dev-pass-inp').focus();
+    // Shake
+    const panel = document.getElementById('dev-panel');
+    panel.style.transition = 'transform .07s';
+    panel.style.transform = 'translateX(-8px)';
+    setTimeout(() => panel.style.transform = 'translateX(8px)',  80);
+    setTimeout(() => panel.style.transform = 'translateX(-5px)', 160);
+    setTimeout(() => panel.style.transform = 'translateX(0)',    240);
+  }
+}
+
+function activateDevMode() {
+  devModeActive = true;
+  localStorage.setItem(DEV_KEY, '1');
+  // Show unlock animation
+  document.getElementById('dev-form-wrap').style.display = 'none';
+  const msg = document.getElementById('dev-unlocked-msg');
+  document.getElementById('dev-result-text').textContent = 'DEVELOPER MODE ON';
+  document.getElementById('dev-result-sub').textContent  = 'WELCOME, DEVELOPER';
+  document.getElementById('dev-unlocked-msg').querySelector('.dev-icon-big').textContent = '🛡️';
+  msg.style.display = 'flex';
+  document.getElementById('dev-mode-indicator').style.display = 'block';
+  setTimeout(() => closeDevModal(), 2400);
+}
+
+function deactivateDevMode() {
+  devModeActive = false;
+  localStorage.removeItem(DEV_KEY);
+  // Show brief "off" modal
+  document.getElementById('dev-form-wrap').style.display = 'none';
+  document.getElementById('dev-modal-icon').textContent = '🔒';
+  document.getElementById('dev-modal-title').textContent = 'SECRET MODE';
+  document.getElementById('dev-modal-sub').textContent   = 'Developer Password';
+  const msg = document.getElementById('dev-unlocked-msg');
+  document.getElementById('dev-result-text').textContent = 'DEVELOPER MODE OFF';
+  document.getElementById('dev-result-sub').textContent  = 'MODE DEACTIVATED';
+  document.getElementById('dev-unlocked-msg').querySelector('.dev-icon-big').textContent = '🔒';
+  msg.style.display = 'flex';
+  document.getElementById('dev-modal').style.display = 'flex';
+  document.getElementById('dev-mode-indicator').style.display = 'none';
+  setTimeout(() => closeDevModal(), 2000);
+}
+
+// ── Apply dev texture to an avatar element (circle) ──
+function applyDevTexture(avatarEl) {
+  if (!avatarEl) return;
+  avatarEl.classList.add('dev-avatar-texture');
+}
+
+function removeDevTexture(avatarEl) {
+  if (!avatarEl) return;
+  avatarEl.classList.remove('dev-avatar-texture');
+}
+
+// ── Apply dev texture to outer SLOT box (invite lobby) ──
+function applyDevSlotTexture(slotEl) {
+  if (!slotEl) return;
+  slotEl.classList.add('dev-slot-texture');
+  slotEl.classList.remove('ilob-slot-red','ilob-slot-blue'); // remove base bg so gradient shows
+}
+
+function removeDevSlotTexture(slotEl) {
+  if (!slotEl) return;
+  slotEl.classList.remove('dev-slot-texture');
+  // Restore original colour class based on which slot it is
+  if (slotEl.id === 'ilob-slot-1') slotEl.classList.add('ilob-slot-red');
+  if (slotEl.id === 'ilob-slot-2') slotEl.classList.add('ilob-slot-blue');
+}
+
+// ── Apply dev texture to a rectangular row (3P/4P lists) ──
+function applyDevRowTexture(rowEl) {
+  if (!rowEl) return;
+  rowEl.classList.add('dev-row-texture');
+}
+
+function removeDevRowTexture(rowEl) {
+  if (!rowEl) return;
+  rowEl.classList.remove('dev-row-texture');
+}
+
+// ── Get DEV badge HTML for lobby ──
+function devBadgeHTML() {
+  return '<span class="ilob-badge ilob-badge-dev">⚡ DEV</span>';
+}
+function devBadgeRowHTML() {
+  return '<span class="pwi-badge badge-dev">⚡ DEV</span>';
+}
 
 </script>
 </body>
